@@ -1,12 +1,26 @@
-import { GetState, SetState, StateCreator, StoreApi } from 'zustand/vanilla';
+import {
+  GetState,
+  SetState,
+  State,
+  StateCreator,
+  StoreApi,
+} from 'zustand/vanilla';
 import { createUndoStore, UndoStoreState } from './factory';
 import { filterState } from './utils';
 
-export type UndoState = Partial<
-  Pick<UndoStoreState, 'undo' | 'redo' | 'clear'> & {
-    getState: () => UndoStoreState;
-  }
->;
+// export type UndoState = Partial<
+//   Pick<UndoStoreState, 'undo' | 'redo' | 'clear'> & {
+//     getState: () => UndoStoreState;
+//   }
+// >;
+export type UndoState = Partial<{
+  undo: () => void;
+  redo: () => void;
+  clear: () => void;
+  // getState: () => UndoStoreState;
+  getState: () => any;
+}> &
+  State;
 
 export interface Options {
   // TODO: improve this type. ignored should only be fields on TState
@@ -18,7 +32,7 @@ export const undoMiddleware = <TState extends UndoState>(
   config: StateCreator<TState>,
   options?: Options
 ) => (set: SetState<TState>, get: GetState<TState>, api: StoreApi<TState>) => {
-  const undoStore = createUndoStore();
+  const undoStore = createUndoStore<TState>();
   const { getState, setState } = undoStore;
   return config(
     args => {
