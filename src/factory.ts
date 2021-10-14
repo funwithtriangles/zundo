@@ -7,6 +7,7 @@ import { filterState } from './utils';
 export interface UndoStoreState {
   prevStates: any[];
   futureStates: any[];
+  shouldIgnoreNext: boolean,
   undo: () => void;
   redo: () => void;
   clear: () => void;
@@ -23,6 +24,7 @@ export const createUndoStore = () => {
     return {
       prevStates: [],
       futureStates: [],
+      shouldIgnoreNext: false,
       undo: () => {
         const { prevStates, futureStates, setStore, getStore, options } = get();
         if (prevStates.length > 0) {

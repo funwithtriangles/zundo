@@ -23,6 +23,7 @@ interface StoreState extends UndoState {
   bears: number;
   ignored: number;
   increasePopulation: () => void;
+  increasePopulationWithIgnore: () => void;
   removeAllBears: () => void;
   decreasePopulation: () => void;
   doNothing: () => void;
@@ -36,6 +37,8 @@ const useStore = create<StoreState>(
       ignored: 0,
       increasePopulation: () =>
         set(state => ({ bears: state.bears + 1, ignored: state.ignored + 1 })),
+      increasePopulationWithIgnore: () =>
+        set(state => ({ bears: state.bears + 1, ignored: state.ignored + 1 }), false, { shouldIgnore: true }),
       decreasePopulation: () =>
         set(state => ({ bears: state.bears - 1, ignored: state.ignored - 1 })),
       doNothing: () => set(state  => ({ ...state })),
@@ -51,6 +54,7 @@ const App = () => {
     bears,
     ignored,
     increasePopulation,
+    increasePopulationWithIgnore,
     removeAllBears,
     decreasePopulation,
     undo,
@@ -85,6 +89,8 @@ const App = () => {
       <button onClick={clear}>clear</button>
       <br />
       <button onClick={doNothing}>do nothing</button>
+      <br />
+      <button onClick={increasePopulationWithIgnore}>increase (but ignore)</button>
     </div>
   );
 };
